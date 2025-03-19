@@ -6,7 +6,8 @@
     <title>Project: Rock Paper Scissors</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gray-100">
+<body class="text-center bg-gray-100">
+    <h1 class="text-xl">Round <span id="round" class="text-center text-emerald-500 font-bold"></span></h1>
     <div class="flex justify-center gap-4 p-2">
         <h1 class="text-xl">Player Score: <span id="humanScore" class="text-emerald-500 font-bold">0</span></h1>
         <h1 class="text-xl">Computer Score: <span id="computerScore" class="text-emerald-500 font-bold">0</span></h1>
@@ -18,9 +19,9 @@
     </div>
 
     <div class="flex flex-col justify-center items-center">
-        <div id="selectionMenu" class="hidden text-center">
+        <div id="selectionMenu" class="text-center">
             <h1>Select!</h1>
-            <div class="flex items-center gap-1 mt-2">
+            <div id="buttons" class="flex items-center gap-1 mt-2">
                 <button id="rockButton" class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow cursor-pointer">
                     Rock
                 </button>

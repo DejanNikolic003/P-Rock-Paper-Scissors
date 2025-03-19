@@ -1,125 +1,107 @@
 const humanScoreElement = document.querySelector('#humanScore');
 const computerScoreElement = document.querySelector('#computerScore');
 const startGameButton = document.querySelector('#startGameBtn');
-
-const rockButton = document.querySelector('#rockButton');
-const paperButton = document.querySelector('#paperButton');
-const scissorsButton = document.querySelector('#scissorsButton');
-
+const buttons = document.querySelectorAll('#buttons');
 const selectionMenu = document.querySelector('#selectionMenu');
 const winnerElement = document.querySelector('#winnerElement');
+const roundEl = document.querySelector('#round');
 
 let computerSelection, humanSelection;
 let humanScore = 0;
 let computerScore = 0;
-let moveTypes = ['Rock', 'Paper', 'Scissors'];
+let rounds = 0;
+let maxRounds = 5;
+let moves = ['Rock', 'Paper', 'Scissors'];
 
-
-function getChoice() {
-    return moveTypes[getRandomInt(moveTypes.length)];
+const getRandomChoice = () => {
+    return moves[getRandomInt(moves.length)];
 }
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
+const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max); 
 }
 
-function checkWinner()
-{
-    if(humanScore > computerScore) {
-        return 'Human won with ' + humanScore + ' points!';
-    } else if(humanScore < computerScore) {
-        return 'Computer won with ' + computerScore + ' points!';
-    } else {
-        return 'TIE';
+const increaseScore = (hasHumanWon) => {
+    return hasHumanWon ? humanScore++ : computerScore++;
+}
+
+const checkWinner = () => {
+    return (humanScore > computerScore) ? 
+            'Human won with ' + humanScore + ' points!' :
+            'Computer won with ' + computerScore + ' points!';
+}
+
+const playRound = (humanSelection, computerSelection) => {
+    if(humanSelection === computerSelection) {   
+        rounds++;
+        roundEl.textContent = rounds + '/' + maxRounds;
+        return
     }
-}
-
-function playRound(humanSelection, computerSelection) {
-    let hasHumanWon, hasComputerWon = false;
-
-    console.log('Selections:');
-    console.log('Human: ' + humanSelection);
-    console.log('Computer: ' + computerSelection);
-
-    if(humanSelection === computerSelection)
-    {
-        console.log('TIE!');
-        return;
-    }
+    let hasHumanWon = false;
 
     switch(humanSelection) {
-        case moveTypes[0]:
-            if(computerSelection !== moveTypes[1]) {
-                hasHumanWon = true;
+        case moves[0]:
+            if(computerSelection === moves[1]) {
                 break;
             }
-            hasComputerWon = true;
+            hasHumanWon = true;
             break;
-        case moveTypes[1]:
-            if(computerSelection !== moveTypes[2]) {
-                hasHumanWon = true;
+        case moves[1]:
+            if(computerSelection === moves[2]) {
                 break;
             }
-            hasComputerWon = true;
+            hasHumanWon = true;
             break;
-        case moveTypes[2]:
-            if(computerSelection !== moveTypes[0]) {
-                hasHumanWon = true;
+        case moves[2]:
+            if(computerSelection === moves[0]) {
                 break;
             }
-            hasComputerWon = true;
-            break;
-    }
-    
-
-    if(hasHumanWon) {
-        humanScore++;
-        return;
+            hasHumanWon = true;
+            break;      
     }
 
-    if(hasComputerWon) {
-        computerScore++;
-        return;
-    }
+    increaseScore(hasHumanWon);
+
+    rounds++;
+
+    roundEl.textContent = rounds + '/' + maxRounds;
 }
 
-function startGame() {
-    computerSelection = getChoice();
-    playRound(humanSelection, computerSelection);
+const endGame = () => {
+    let winner = checkWinner();
 
-    winnerElement.innerHTML = checkWinner();
-
-    humanScoreElement.innerHTML = humanScore;
-    computerScoreElement.innerHTML = computerScore;
-
+    winnerElement.textContent = winner;
     winnerElement.classList.remove('hidden');
+
     startGameButton.classList.remove('hidden');
     selectionMenu.classList.add('hidden');
 }
 
-startGameButton.addEventListener('click', (event) => {
-    startGameButton.classList.add('hidden');
-    winnerElement.classList.add('hidden');
-    selectionMenu.classList.remove('hidden');
+const startGame = () => {
+    if(rounds === maxRounds) return endGame();
 
-    humanScore = 0;
-    computerScore = 0;
+    computerSelection = getRandomChoice();
 
-    humanScoreElement.innerHTML = humanScore;
-    computerScoreElement.innerHTML = computerScore;
-});
+    playRound(humanSelection, computerSelection);
 
-rockButton.addEventListener('click', (event) => {
-    humanSelection = moveTypes[0];
-    startGame();
-});
+    humanScoreElement.textContent = humanScore;
+    computerScoreElement.textContent = computerScore;
+}
 
-paperButton.addEventListener('click', (event) => {
-    humanSelection = moveTypes[1];
-    startGame();
-});
+buttons.forEach(button => {
+    button.addEventListener('click', (event) => {
+        switch(event.target.id) {
+            case 'rockButton':
+                humanSelection = moves[0];
+                break;
+            case 'paperButton':
+                humanSelection = moves[1];
+                break;
+            case 'scissorsButton':
+                humanSelection = moves[2];
+                break;
+        }
 
-scissorsButton.addEventListener('click', (event) => {
-    humanSelection = moveTypes[2];
-    startGame();
+        startGame();
+    });
 });
